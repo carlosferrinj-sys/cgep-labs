@@ -10,9 +10,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "project_name" { type = string }
-variable "environment"  { type = string }
-
 resource "random_id" "suffix" {
   byte_length = 4
 }
