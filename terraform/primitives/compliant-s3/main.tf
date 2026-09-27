@@ -1,13 +1,28 @@
+terraform {
+  required_version = ">= 1.6"
+  required_providers {
+    aws    = { source = "hashicorp/aws", version = "~> 5.0" }
+    random = { source = "hashicorp/random", version = "~> 3.0" }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+variable "project_name" { type = string }
+variable "environment"  { type = string }
+
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 resource "aws_s3_bucket" "primary" {
   bucket = "${var.project_name}-${var.environment}-${random_id.suffix.hex}"
 
   tags = {
     Name = "${var.project_name}-${var.environment}-bucket"
   }
-}
-
-resource "random_id" "suffix" {
-  byte_length = 4
 }
 
 #tfsec:ignore:aws-s3-encryption-customer-key
