@@ -54,23 +54,10 @@ jobs:
         id: conftest
         run: |
           mkdir -p evidence/lab-4-3
-          EXIT=0
-          {
-            echo "["
-            FIRST=1
-            for ns in compliance.sc28_aws compliance.ac3_aws compliance.cm6_aws ; do
-              [[ $FIRST -eq 1 ]] && FIRST=0 || printf ","
-              set +e
-              OUT=$(conftest test --policy policies --namespace "$ns" --output=json "$TF_WORKING_DIR/plan.json")
-              STATUS=$?
-              set -e
-              [[ $STATUS -eq 0 ]] || EXIT=1
-              printf "%s" "$OUT"
-            done
-            echo
-            echo "]"
-          } > evidence/lab-4-3/conftest-results.json
-          if [[ $EXIT -eq 0 ]]; then echo "conftest: PASS"; else echo "conftest: FAIL"; exit 1; fi
+          conftest test --policy policies --namespace compliance.sc28_aws "$TF_WORKING_DIR/plan.json"
+          conftest test --policy policies --namespace compliance.ac3_aws "$TF_WORKING_DIR/plan.json"
+          conftest test --policy policies --namespace compliance.cm6_aws "$TF_WORKING_DIR/plan.json"
+          conftest test --policy policies --output json "$TF_WORKING_DIR/plan.json" > evidence/lab-4-3/conftest-results.json
 
       - name: tfsec scan
         id: tfsec
